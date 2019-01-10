@@ -283,20 +283,20 @@ main()
 
         if (sw2) {
             if (state == 0 || state == 3) {
-                // just switch state do the routine
+                // just switch show message
                 Message("SW2 pressed\n\r");
-                LEDBlinkyRoutine();
-                SetP18(1);
             }
+            LEDBlinkyRoutine();
+            SetP18(1);
             state = 2;
         }
         if (sw3) {
             if (state == 0 || state == 2) {
-                // just switch state do the routine
+                // just switch show message
                 Message("SW3 pressed\n\r");
-                LEDCountRoutine();
-                SetP18(0);
             }
+            LEDCountRoutine();
+            SetP18(0);
             state = 3;
         }
     }

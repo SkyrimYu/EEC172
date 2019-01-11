@@ -119,7 +119,8 @@ static void BoardInit(void);
 //! \return None
 //
 //*****************************************************************************
-void AllLEDOFF()
+void
+AllLEDOFF()
 {
     GPIOPinWrite(GPIOA1_BASE, 0x2, 0); // red off
     GPIOPinWrite(GPIOA1_BASE, 0x4, 0); // orange off
@@ -133,8 +134,9 @@ LEDCountRoutine()
     // Toggle the lines initially to turn off the LEDs.
     // The values driven are as required by the LEDs on the LP.
     //
-    AllLEDOFF();
 
+    // 000
+    AllLEDOFF();
     // 001
     MAP_UtilsDelay(8000000);
     GPIOPinWrite(GPIOA1_BASE, 0x2, 0x2); // red on
@@ -171,22 +173,16 @@ LEDBlinkyRoutine()
     // The values driven are as required by the LEDs on the LP.
     //
     AllLEDOFF();
-
     MAP_UtilsDelay(8000000);
     GPIOPinWrite(GPIOA1_BASE, 0x2, 0x2); // red on
-    MAP_UtilsDelay(8000000);
-    GPIOPinWrite(GPIOA1_BASE, 0x2, 0); // red off
-    MAP_UtilsDelay(8000000);
     GPIOPinWrite(GPIOA1_BASE, 0x4, 0x4); // orange on
-    MAP_UtilsDelay(8000000);
-    GPIOPinWrite(GPIOA1_BASE, 0x4, 0); // orange off
-    MAP_UtilsDelay(8000000);
     GPIOPinWrite(GPIOA1_BASE, 0x8, 0x8); // green on
     MAP_UtilsDelay(8000000);
-    GPIOPinWrite(GPIOA1_BASE, 0x8, 0); // green off
+    AllLEDOFF();
 }
 
-void SetP18(int val)
+void
+SetP18(int val)
 {
     if (val)
         GPIOPinWrite(GPIOA3_BASE, 0x10, 0x10);
@@ -273,30 +269,32 @@ main()
     Message("\t\tPush SW2 to blink LEDs on and off\n\r");
     Message("\t\t****************************************************\n\r");
     Message("\n\n\n\r");
-    //
-    // Start the LEDBlinkyRoutine
-    //
+
     int state = 0; // 0 = initialize state
-    while(1) {
+    while(1)
+    {
         int sw2 = GPIOPinRead(GPIOA2_BASE, 0x40);
         int sw3 = GPIOPinRead(GPIOA1_BASE, 0x20);
 
-        if (sw2) {
-            if (state == 0 || state == 3) {
-                // just switch show message
+        if ((sw2 & 0x40) != 0) // switch 2 pushed
+        {
+            if (state == 0 || state == 3)
+            {
+                // just switch, show message
                 Message("SW2 pressed\n\r");
             }
             LEDBlinkyRoutine();
-            SetP18(1);
+            SetP18(1); // set high
             state = 2;
         }
-        if (sw3) {
+        else if ((sw3 & 0x20) != 0) // switch 3 pushed
+        {
             if (state == 0 || state == 2) {
-                // just switch show message
+                // just switch, show message
                 Message("SW3 pressed\n\r");
             }
             LEDCountRoutine();
-            SetP18(0);
+            SetP18(0); // set low
             state = 3;
         }
     }

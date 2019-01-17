@@ -1,59 +1,9 @@
 //*****************************************************************************
 //
-// Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
-// 
-// 
-//  Redistribution and use in source and binary forms, with or without 
-//  modification, are permitted provided that the following conditions 
-//  are met:
-//
-//    Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer.
-//
-//    Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the 
-//    documentation and/or other materials provided with the   
-//    distribution.
-//
-//    Neither the name of Texas Instruments Incorporated nor the names of
-//    its contributors may be used to endorse or promote products derived
-//    from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-//  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-//  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-//  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
-//  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// EEC 172 Lab #1
+// Authors: Kevin Ren, Teresa Li
 //
 //*****************************************************************************
-
-//*****************************************************************************
-//
-// Application Name     - Blinky
-// Application Overview - The objective of this application is to showcase the 
-//                        GPIO control using Driverlib api calls. The LEDs 
-//                        connected to the GPIOs on the LP are used to indicate 
-//                        the GPIO output. The GPIOs are driven high-low 
-//                        periodically in order to turn on-off the LEDs.
-// Application Details  -
-// http://processors.wiki.ti.com/index.php/CC32xx_Blinky_Application
-// or
-// docs\examples\CC32xx_Blinky_Application.pdf
-//
-//*****************************************************************************
-
-//****************************************************************************
-//
-//! \addtogroup blinky
-//! @{
-//
-//****************************************************************************
 
 // Standard includes
 #include <stdio.h>
@@ -107,14 +57,9 @@ static void BoardInit(void);
 
 //*****************************************************************************
 //
-//! Configures the pins as GPIOs and peroidically toggles the lines
+//! Turn off all the LEDS
 //!
 //! \param None
-//! 
-//! This function  
-//!    1. Configures 3 lines connected to LEDs as GPIO
-//!    2. Sets up the GPIO pins as output
-//!    3. Periodically toggles each LED one by one by toggling the GPIO line
 //!
 //! \return None
 //
@@ -127,6 +72,15 @@ AllLEDOFF()
     GPIOPinWrite(GPIOA1_BASE, 0x8, 0); // green off
 }
 
+//*****************************************************************************
+//
+//! Perform the binary counting routine 
+//!
+//! \param None
+//!
+//! \return None
+//
+//*****************************************************************************
 void
 LEDCountRoutine()
 {
@@ -181,6 +135,15 @@ LEDBlinkyRoutine()
     AllLEDOFF();
 }
 
+//*****************************************************************************
+//
+//! Set P18 high or low
+//!
+//! \param val: indicate setting high or low
+//!
+//! \return None
+//
+//*****************************************************************************
 void
 SetP18(int val)
 {
@@ -192,9 +155,7 @@ SetP18(int val)
 //*****************************************************************************
 //
 //! Board Initialization & Configuration
-//!
 //! \param  None
-//!
 //! \return None
 //
 //*****************************************************************************
@@ -229,8 +190,9 @@ BoardInit(void)
 //! \param none
 //! 
 //! This function  
-//!    1. Invokes the LEDBlinkyTask
-//!
+//!    1. Invokes the LEDBlinky and set P18 high when switch 2 pressed
+//!    2. Invokes the LED Binary Counting Routine and set P18 low when switch 3 
+//!       pressed
 //! \return None.
 //
 //****************************************************************************

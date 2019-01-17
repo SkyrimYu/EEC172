@@ -43,7 +43,6 @@ void writeCommand(unsigned char c) {
     SPIDataPut(GSPI_BASE, c);
     SPIDataGet(GSPI_BASE, &buffer);
 
-    GPIOPinWrite(GPIOA0_BASE, DC, DC);
     GPIOPinWrite(GPIOA0_BASE, OC, OC);
     SPICSDisable(GSPI_BASE);
 }
@@ -64,7 +63,6 @@ void writeData(unsigned char c) {
     SPIDataPut(GSPI_BASE, c);
     SPIDataGet(GSPI_BASE, &buffer);
 
-    GPIOPinWrite(GPIOA0_BASE, DC, 0);
     GPIOPinWrite(GPIOA0_BASE, OC, OC);
     SPICSDisable(GSPI_BASE);
 }

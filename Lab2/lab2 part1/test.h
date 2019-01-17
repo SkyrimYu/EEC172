@@ -284,7 +284,7 @@ void test() {
         int index, cursor = 0;
         unsigned char c;
 
-        for (index = 0, c = 1; c <= 254; c++, index++) {
+        for (index = 0, c = 1; c < 254; c++, index++) {
             all[index] = c;
         }
         all[index] = '\0';

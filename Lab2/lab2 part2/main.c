@@ -1,58 +1,10 @@
 //*****************************************************************************
 //
-// Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
-// 
-// 
-//  Redistribution and use in source and binary forms, with or without 
-//  modification, are permitted provided that the following conditions 
-//  are met:
-//
-//    Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer.
-//
-//    Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the 
-//    documentation and/or other materials provided with the   
-//    distribution.
-//
-//    Neither the name of Texas Instruments Incorporated nor the names of
-//    its contributors may be used to endorse or promote products derived
-//    from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-//  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-//  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-//  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
-//  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// Application Name     - Lab 2
+// Teresa Li and Kevin Ren
 //
 //*****************************************************************************
 
-//*****************************************************************************
-//
-// Application Name     - I2C 
-// Application Overview - The objective of this application is act as an I2C 
-//                        diagnostic tool. The demo application is a generic 
-//                        implementation that allows the user to communicate 
-//                        with any I2C device over the lines. 
-// Application Details  -
-// http://processors.wiki.ti.com/index.php/CC32xx_I2C_Application
-// or
-// docs\examples\CC32xx_I2C_Application.pdf
-//
-//*****************************************************************************
-
-//*****************************************************************************
-//
-//! \addtogroup i2c_demo
-//! @{
-//
-//*****************************************************************************
 
 // Standard includes
 #include <stdio.h>
@@ -78,7 +30,6 @@
 
 #include "pin_mux_config.h"
 #include "Adafruit_GFX.h"
-#include "test.h"
 
 
 //*****************************************************************************
@@ -93,6 +44,16 @@
 #define SUCCESS                 0
 #define SPI_IF_BIT_RATE  100000
 #define TR_BUFF_SIZE     100
+// Color definitions
+#define BLACK           0x0000
+#define BLUE            0x001F
+#define GREEN           0x07E0
+#define CYAN            0x07FF
+#define RED             0xF800
+#define MAGENTA         0xF81F
+#define YELLOW          0xFFE0
+#define WHITE           0xFFFF
+
 #define OC  0x80
 #define RETERR_IF_TRUE(condition) {if(condition) return FAILURE;}
 #define RET_IF_ERR(Func)          {int iRetVal = (Func); \
@@ -118,48 +79,7 @@ extern uVectorEntry __vector_table;
 //****************************************************************************
 
 //*****************************************************************************
-//
-//! Display a prompt for the user to enter command
-//!
-//! \param  none
-//!
-//! \return none
-//! 
-//*****************************************************************************
-void 
-DisplayPrompt()
-{
-    UART_PRINT("\n\rcmd#");
-}
 
-
-//*****************************************************************************
-//
-//! Display the buffer contents over I2C
-//!
-//! \param  pucDataBuf is the pointer to the data store to be displayed
-//! \param  ucLen is the length of the data to be displayed
-//!
-//! \return none
-//! 
-//*****************************************************************************
-void 
-DisplayBuffer(unsigned char *pucDataBuf, unsigned char ucLen)
-{
-    unsigned char ucBufIndx = 0;
-    UART_PRINT("Read contents");
-    UART_PRINT("\n\r");
-    while(ucBufIndx < ucLen)
-    {
-        UART_PRINT(" 0x%x, ", pucDataBuf[ucBufIndx]);
-        ucBufIndx++;
-        if((ucBufIndx % 8) == 0)
-        {
-            UART_PRINT("\n\r");
-        }
-    }
-    UART_PRINT("\n\r");
-}
 
 //*****************************************************************************
 //
@@ -280,6 +200,7 @@ void main()
     MAP_SPICSEnable(GSPI_BASE); // Enables chip select
     MAP_GPIOPinWrite(GPIOA0_BASE, OC, OC);
     int cx = 64, cy = 64; //  start with middle
+    int lastx = 64, lasty = 64;
     unsigned char x = 0x05, y = 0x03, xVal, yVal;
     Adafruit_Init();
     fillScreen(BLACK);
@@ -315,7 +236,6 @@ void main()
         if (ySpeed > 128)
             ySpeed -= 256;
 
-        fillCircle(cx, cy, 2, BLACK); // clear the circle
         cx += xSpeed * 0.05;
         cx = cx >= 123 ? 123 : cx;
         cx = cx <= 4 ? 4 : cx;
@@ -323,18 +243,18 @@ void main()
         cy = cy >= 123 ? 123 : cy;
         cy = cy <= 4 ? 4 : cy;
 
-        fillCircle(cx, cy, 2, CYAN); // draw the new one
+        //  move if coordinates changed
+        if (lastx != cx || lasty != cy) {
+            fillCircle(lastx, lasty, 2, BLACK); // clear the circle
+            fillCircle(cx, cy, 2, CYAN); // draw the new one
+        }
+
+        lastx = cx;
+        lasty = cy;
 
     }
 
     MAP_SPICSDisable(GSPI_BASE);
 }
-
-//*****************************************************************************
-//
-// Close the Doxygen group.
-//! @
-//
-//*****************************************************************************
 
 

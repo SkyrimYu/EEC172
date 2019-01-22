@@ -26,9 +26,6 @@ main.obj: C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/uart_if.h
 main.obj: C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/i2c_if.h
 main.obj: ../pin_mux_config.h
 main.obj: ../Adafruit_GFX.h
-main.obj: ../test.h
-main.obj: ../Adafruit_SSD1351.h
-main.obj: ../glcdfont.h
 
 ../main.c: 
 C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include/stdio.h: 
@@ -56,6 +53,3 @@ C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/uart_if.h:
 C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/i2c_if.h: 
 ../pin_mux_config.h: 
 ../Adafruit_GFX.h: 
-../test.h: 
-../Adafruit_SSD1351.h: 
-../glcdfont.h: 

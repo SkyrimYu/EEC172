@@ -280,21 +280,15 @@ void lcdTestPattern2(void)
 void test() {
     while (1) {
         fillScreen(BLACK);
-        char all[100];
-        int index, cursor = 0;
-        unsigned char c;
+        int index, cx = 0, cy;
 
-        for (index = 0, c = 1; c < 254; c++, index++) {
-            all[index] = c;
+        for (cx = 0, cy = 0, index = 0; index < 255; index++, cx+=6) {
+            drawChar(cx, cy, index, WHITE, BLACK, 1);
+            if (cx > 127) {
+                cx = 0;
+                cy += 8;
+            }
         }
-        all[index] = '\0';
-
-        for (cursor = 0, index = 0; all[index] != '\0'; index+=20, cursor+=8) {
-            setCursor(0, cursor);
-            Outstr(all + index);
-        }
-
-        //Outstr(all);
         delay(100);
         fillScreen(BLACK);
         setCursor(0,0);

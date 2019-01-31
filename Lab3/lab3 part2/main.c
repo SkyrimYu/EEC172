@@ -62,11 +62,12 @@
 
 // Common interface includes
 #include "uart_if.h"
-#include "pinmux.h"
+
+#include "pin_mux_config.h"
 
 
 #define APPLICATION_VERSION     "1.1.1"
-#define APP_NAME        "Timer Count Capture"
+#define APP_NAME        "Decoding IR Transmissions"
 
 #define BUTTON_ZERO     255
 #define BUTTON_ONE      32895
@@ -262,11 +263,9 @@ int main()
             continue;
         }
 
-        //Report("You pressed: ");
         sum = 0;
         for(k = 0; k < 16; k++){
             sum += (int)number[k]*pow(2, (15-k));
-            //Report("%d", (int)number[k]);
         }
 
         Report("You pressed: ");

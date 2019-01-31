@@ -10,37 +10,37 @@ CMD_SRCS += \
 
 C_SRCS += \
 ../main.c \
-../pinmux.c \
+../pin_mux_config.c \
 C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/startup_ccs.c \
 C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/uart_if.c 
 
 C_DEPS += \
 ./main.d \
-./pinmux.d \
+./pin_mux_config.d \
 ./startup_ccs.d \
 ./uart_if.d 
 
 OBJS += \
 ./main.obj \
-./pinmux.obj \
+./pin_mux_config.obj \
 ./startup_ccs.obj \
 ./uart_if.obj 
 
 OBJS__QUOTED += \
 "main.obj" \
-"pinmux.obj" \
+"pin_mux_config.obj" \
 "startup_ccs.obj" \
 "uart_if.obj" 
 
 C_DEPS__QUOTED += \
 "main.d" \
-"pinmux.d" \
+"pin_mux_config.d" \
 "startup_ccs.d" \
 "uart_if.d" 
 
 C_SRCS__QUOTED += \
 "../main.c" \
-"../pinmux.c" \
+"../pin_mux_config.c" \
 "C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/startup_ccs.c" \
 "C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/uart_if.c" 
 

@@ -11,7 +11,7 @@ GEN_CMDS__FLAG :=
 
 ORDERED_OBJS += \
 "./main.obj" \
-"./pinmux.obj" \
+"./pin_mux_config.obj" \
 "./startup_ccs.obj" \
 "./uart_if.obj" \
 "../cc3200v1p32.cmd" \
@@ -124,34 +124,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-timer_cc.out \
+lab3\ part2.out \
 
 EXE_OUTPUTS__QUOTED += \
-"timer_cc.out" \
+"lab3 part2.out" \
 
 BIN_OUTPUTS += \
-timer_cc.bin \
+lab3\ part2.bin \
 
 BIN_OUTPUTS__QUOTED += \
-"timer_cc.bin" \
+"lab3 part2.bin" \
 
 
 # All Target
-all: timer_cc.out
+all: lab3\ part2.out
 
 # Tool invocations
-timer_cc.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+lab3\ part2.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib --abi=eabi -me -g --define=cc3200 --define=ccs --diag_warning=225 --diag_wrap=off --display_error_number -z -m"timer_cc.map" --stack_size=0x1000 --heap_size=0x800 -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/lib" -i"C:/TI/CC3200SDK_1.3.0/cc3200-sdk/driverlib/ccs/Release" -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="timer_cc_linkInfo.xml" --rom_model -o "timer_cc.out" $(ORDERED_OBJS)
+	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib --abi=eabi -me -g --define=cc3200 --define=ccs --diag_warning=225 --diag_wrap=off --display_error_number -z -m"lab3 part2.map" --stack_size=0x1000 --heap_size=0x800 -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/lib" -i"C:/TI/CC3200SDK_1.3.0/cc3200-sdk/driverlib/ccs/Release" -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="lab3 part2_linkInfo.xml" --rom_model -o "lab3 part2.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
 
-timer_cc.bin: $(EXE_OUTPUTS)
+lab3\ part2.bin: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armhex"  -o "timer_cc.bin" $(EXE_OUTPUTS__QUOTED)
+	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armhex"  -o "lab3 part2.bin" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build
@@ -159,13 +159,13 @@ timer_cc.bin: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "pinmux.obj" "startup_ccs.obj" "uart_if.obj" 
-	-$(RM) "main.d" "pinmux.d" "startup_ccs.d" "uart_if.d" 
+	-$(RM) "main.obj" "pin_mux_config.obj" "startup_ccs.obj" "uart_if.obj" 
+	-$(RM) "main.d" "pin_mux_config.d" "startup_ccs.d" "uart_if.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
 post-build:
-	-"C:/TI/ccsv8/utils/tiobj2bin/tiobj2bin" "timer_cc.out" "timer_cc.bin" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armofd" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armhex" "C:/TI/ccsv8/utils/tiobj2bin/mkhex4bin"
+	-"C:/TI/ccsv8/utils/tiobj2bin/tiobj2bin" "lab3 part2.out" "lab3 part2.bin" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armofd" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armhex" "C:/TI/ccsv8/utils/tiobj2bin/mkhex4bin"
 	-@echo ' '
 
 .PHONY: all clean dependents

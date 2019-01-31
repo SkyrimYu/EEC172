@@ -1,0 +1,106 @@
+
+**** Build of configuration Release for project int_sw ****
+
+"C:\\TI\\ccsv8\\utils\\bin\\gmake" -k all 
+ 
+Building file: "../main.c"
+Invoking: ARM Compiler
+"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -Ooff --include_path="C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/example/common" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/driverlib" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/inc" --define=ccs --define=NON_NETWORK --define=cc3200 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="main.d_raw"  "../main.c"
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+Finished building: "../main.c"
+ 
+Building file: "../pin_mux_config.c"
+Invoking: ARM Compiler
+"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -Ooff --include_path="C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/example/common" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/driverlib" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/inc" --define=ccs --define=NON_NETWORK --define=cc3200 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="pin_mux_config.d_raw"  "../pin_mux_config.c"
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+Finished building: "../pin_mux_config.c"
+ 
+Building file: "C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/startup_ccs.c"
+Invoking: ARM Compiler
+"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -Ooff --include_path="C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/example/common" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/driverlib" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/inc" --define=ccs --define=NON_NETWORK --define=cc3200 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="startup_ccs.d_raw"  "C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/startup_ccs.c"
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+Finished building: "C:/TI/CC3200SDK_1.3.0/cc3200-sdk/example/common/startup_ccs.c"
+ 
+Building file: "../uart_if.c"
+Invoking: ARM Compiler
+"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -Ooff --include_path="C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/example/common" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/driverlib" --include_path="C:/ti/CC3200SDK_1.3.0/cc3200-sdk/inc" --define=ccs --define=NON_NETWORK --define=cc3200 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --preproc_with_compile --preproc_dependency="uart_if.d_raw"  "../uart_if.c"
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+Finished building: "../uart_if.c"
+ 
+Building target: "int_sw.out"
+Invoking: ARM Linker
+"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -Ooff --define=ccs --define=NON_NETWORK --define=cc3200 -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"int_sw.map" --heap_size=0x800 --stack_size=0x800 -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/lib" -i"C:/ti/CC3200SDK_1.3.0/cc3200-sdk/driverlib/ccs/Release" -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="int_sw_linkInfo.xml" --rom_model -o "int_sw.out" "./main.obj" "./pin_mux_config.obj" "./startup_ccs.obj" "./uart_if.obj" "../cc3200v1p32.cmd"  -llibc.a -ldriverlib.a 
+<Linking>
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+Finished building target: "int_sw.out"
+ 
+"C:/TI/ccsv8/utils/tiobj2bin/tiobj2bin" "int_sw.out" "int_sw.bin" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armofd" "C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armhex" "C:/TI/ccsv8/utils/tiobj2bin/mkhex4bin"
+C:/TI/ccsv8/utils/tiobj2bin/mkhex4bin failure occurred.  Giving up.
+ 
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+error: failed to read "int_sw.out"
+Use of uninitialized value $str in pattern match (m//) at XML_TI_OFD.pm line 2146.
+Use of uninitialized value $targ_num in hash element at XML_TI_OFD.pm line 1325.
+Unexpected target: unknown at script/mkhex4bin.pl line 270.
+\\MAC\Home\Documents\GitHub\A01_KevinRen_TeresaLi_WQ2019\Lab3\int_sw\Release
+CMD.EXE was started with the above path as the current directory.
+UNC paths are not supported.  Defaulting to Windows directory.
+
+**** Build Finished ****

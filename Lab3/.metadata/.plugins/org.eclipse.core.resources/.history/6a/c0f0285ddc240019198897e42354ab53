@@ -1,0 +1,250 @@
+
+//*****************************************************************************
+//
+// Application Name     - int_sw
+// Application Overview - The objective of this application is to demonstrate
+//							GPIO interrupts using SW2 and SW3.
+//							NOTE: the switches are not debounced!
+//
+//*****************************************************************************
+
+//****************************************************************************
+//
+//! \addtogroup int_sw
+//! @{
+//
+//****************************************************************************
+
+// Standard includes
+#include <stdio.h>
+
+// Driverlib includes
+#include "hw_types.h"
+#include "hw_ints.h"
+#include "hw_memmap.h"
+#include "hw_common_reg.h"
+#include "interrupt.h"
+#include "hw_apps_rcm.h"
+#include "prcm.h"
+#include "rom.h"
+#include "rom_map.h"
+#include "prcm.h"
+#include "gpio.h"
+#include "utils.h"
+#include "timer.h"
+#include "pin.h"
+#include "math.h"
+#include "string.h"
+
+// Common interface includes
+#include "uart_if.h"
+
+#include "pin_mux_config.h"
+
+#define APPLICATION_VERSION     "1.1.1"
+#define APP_NAME        "Read Button"
+#define BTN0        50135295
+#define BTN1        50167935
+#define BTN2        50151615
+#define BTN3        50184255
+#define BTN4        50143455
+#define BTN5        50176095
+#define BTN6        50159775
+#define BTN7        50192415
+#define BTN8        50139359
+#define BTN9        50172127
+#define BTNlast     50135805
+#define BTNmute     50137335
+
+//*****************************************************************************
+//                 GLOBAL VARIABLES -- Start
+//*****************************************************************************
+#if defined(ccs)
+extern void (* const g_pfnVectors[])(void);
+#endif
+#if defined(ewarm)
+extern uVectorEntry __vector_table;
+#endif
+//*****************************************************************************
+//                 GLOBAL VARIABLES -- End
+//*****************************************************************************
+static char number[100];
+static int i = 0;
+
+// an example of how you can use structs to organize your pin settings for easier maintenance
+typedef struct PinSetting {
+    unsigned long port;
+    unsigned int pin;
+} PinSetting;
+
+//static PinSetting receive = { .port = GPIOA2_BASE, .pin = 0x40};
+
+
+
+//*****************************************************************************
+//                      LOCAL FUNCTION DEFINITIONS
+//*****************************************************************************
+
+//*****************************************************************************
+//
+//! Timer interrupt handler
+//
+//*****************************************************************************
+
+void
+DisplayBanner(char * AppName)
+{
+
+    Report("\n\n\n\r");
+    Report("\t\t *************************************************\n\r");
+    Report("\t\t\t  CC3200 %s Application       \n\r", AppName);
+    Report("\t\t *************************************************\n\r");
+    Report("\n\n\n\r");
+}
+
+
+static void TimerIntHandler()
+{
+
+    //
+    // Clear the interrupt
+    //
+    int delta = MAP_TimerValueGet(TIMERA1_BASE, TIMER_A);
+    TimerLoadSet(TIMERA1_BASE, TIMER_A, 0xffff);
+    int value;
+    if(delta < 55000)
+        value = 0;
+    else
+        value = 1;
+    if(i==0)
+        value = 0;
+    number[i++] = (char)value;
+
+    MAP_TimerIntClear(TIMERA1_BASE,TIMER_CAPA_EVENT);
+
+}
+
+
+//*****************************************************************************
+//
+//! Board Initialization & Configuration
+//!
+//! \param  None
+//!
+//! \return None
+//
+//*****************************************************************************
+static void
+BoardInit(void)
+{
+/* In case of TI-RTOS vector table is initialize by OS itself */
+#ifndef USE_TIRTOS
+    //
+    // Set vector table base
+    //
+#if defined(ccs)
+    MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
+#endif
+#if defined(ewarm)
+    MAP_IntVTableBaseSet((unsigned long)&__vector_table);
+#endif
+#endif
+    //
+    // Enable Processor
+    //
+    MAP_IntMasterEnable();
+    MAP_IntEnable(FAULT_SYSTICK);
+
+    PRCMCC3200MCUInit();
+}
+
+//****************************************************************************
+//
+//! Main function
+//!
+//! \param none
+//! 
+//!
+//! \return None.
+//
+//****************************************************************************
+int main() {
+
+    BoardInit();
+    PinMuxConfig();
+    InitTerm();
+    ClearTerm();
+    DisplayBanner(APP_NAME);
+
+
+
+    // Register the interrupt handlers
+    //
+    MAP_TimerIntRegister(TIMERA1_BASE,TIMER_A, TimerIntHandler);
+    MAP_TimerConfigure(TIMERA1_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_CAP_TIME));
+    MAP_TimerControlEvent(TIMERA1_BASE, TIMER_A, TIMER_EVENT_NEG_EDGE);
+    MAP_TimerLoadSet(TIMERA1_BASE, TIMER_A, 0xffff);
+    MAP_TimerIntEnable(TIMERA1_BASE, TIMER_CAPA_EVENT);
+    MAP_TimerEnable(TIMERA1_BASE, TIMER_A);
+
+    while(i < 32){
+    }
+    Report("You pressed: ");
+
+    int k, sum = 0;
+    for(k = 0; k < 32; k++){
+        sum += (int)number[k]*pow(2, (k+1));
+        Report("%d", (int)number[k]);
+    }
+    Report("\n\rUnique ID: %d", sum);
+
+    Report("\n\rYou pressed: ");
+    switch(sum){
+        case(BTN0):
+            Report("0");
+            break;
+        case(BTN1):
+            Report("1");
+            break;
+        case(BTN2):
+            Report("2");
+            break;
+        case(BTN3):
+            Report("3");
+            break;
+        case(BTN4):
+            Report("4");
+            break;
+        case(BTN5):
+            Report("5");
+            break;
+        case(BTN6):
+            Report("6");
+            break;
+        case(BTN7):
+            Report("7");
+            break;
+        case(BTN8):
+            Report("8");
+            break;
+        case(BTN9):
+            Report("9");
+            break;
+        case(BTNmute):
+            Report("MUTE");
+            break;
+        case(BTNlast):
+            Report("LAST");
+            break;
+        default:
+            Report("Unknown code %d", sum);
+            break;
+
+}
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

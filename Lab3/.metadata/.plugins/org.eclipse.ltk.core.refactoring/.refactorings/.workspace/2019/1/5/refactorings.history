@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;int_sw&apos; to &apos;Lab3 Part2&apos;" description="Rename resource &apos;int_sw&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/int_sw" name="Lab3 Part2" stamp="1548830757134" updateReferences="true"/>&#x0A;<refactoring comment="Delete resource &apos;Lab3 Part2/CC3200_TargetConfiguration.ccxml&apos;" deleteContents="false" description="Delete resource &apos;Lab3 Part2/CC3200_TargetConfiguration.ccxml&apos;" element1="/Lab3 Part2/CC3200_TargetConfiguration.ccxml" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1548886832624"/>
+</session>

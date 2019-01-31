@@ -1,0 +1,261 @@
+
+//*****************************************************************************
+//
+// Application Name     - int_sw
+// Application Overview - The objective of this application is to demonstrate
+//							GPIO interrupts using SW2 and SW3.
+//							NOTE: the switches are not debounced!
+//
+//*****************************************************************************
+
+//****************************************************************************
+//
+//! \addtogroup int_sw
+//! @{
+//
+//****************************************************************************
+
+// Standard includes
+#include <stdio.h>
+
+// Driverlib includes
+#include "hw_types.h"
+#include "hw_ints.h"
+#include "hw_memmap.h"
+#include "hw_common_reg.h"
+#include "interrupt.h"
+#include "hw_apps_rcm.h"
+#include "prcm.h"
+#include "rom.h"
+#include "rom_map.h"
+#include "prcm.h"
+#include "gpio.h"
+#include "utils.h"
+
+// Common interface includes
+#include "uart_if.h"
+
+#include "pin_mux_config.h"
+
+#define APPLICATION_VERSION     "1.1.1"
+#define APP_NAME        "Read Button"
+
+//*****************************************************************************
+//                 GLOBAL VARIABLES -- Start
+//*****************************************************************************
+extern void (* const g_pfnVectors[])(void);
+
+volatile unsigned long SW2_intcount;
+volatile unsigned long SW3_intcount;
+volatile unsigned char SW2_intflag;
+volatile unsigned char SW3_intflag;
+
+//*****************************************************************************
+//                 GLOBAL VARIABLES -- End
+//*****************************************************************************
+
+// an example of how you can use structs to organize your pin settings for easier maintenance
+typedef struct PinSetting {
+    unsigned long port;
+    unsigned int pin;
+} PinSetting;
+
+static PinSetting switch2 = { .port = GPIOA2_BASE, .pin = 0x40};
+
+//*****************************************************************************
+//                      LOCAL FUNCTION PROTOTYPES                           
+//*****************************************************************************
+
+//*****************************************************************************
+//
+//! Application startup display on UART
+//!
+//! \param  none
+//!
+//! \return none
+//!
+//*****************************************************************************
+void
+DisplayBanner(char * AppName)
+{
+
+    Report("\n\n\n\r");
+    Report("\t\t *************************************************\n\r");
+    Report("\t\t\t  CC3200 %s Application       \n\r", AppName);
+    Report("\t\t *************************************************\n\r");
+    Report("\n\n\n\r");
+}
+
+//*****************************************************************************
+//
+//! Board Initialization & Configuration
+//!
+//! \param  None
+//!
+//! \return None
+//
+//*****************************************************************************
+void
+BoardInit(void)
+{
+/* In case of TI-RTOS vector table is initialize by OS itself */
+#ifndef USE_TIRTOS
+  //
+  // Set vector table base
+  //
+#if defined(ccs) || defined(gcc)
+    MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
+#endif
+#if defined(ewarm)
+    MAP_IntVTableBaseSet((unsigned long)&__vector_table);
+#endif
+#endif
+    //
+    // Enable Processor
+    //
+    MAP_IntMasterEnable();
+    MAP_IntEnable(FAULT_SYSTICK);
+
+    PRCMCC3200MCUInit();
+}
+
+
+
+//*****************************************************************************
+//                      LOCAL FUNCTION DEFINITIONS                         
+//*****************************************************************************
+
+//*****************************************************************************
+//
+//! Timer interrupt handler
+//
+//*****************************************************************************
+static void TimerIntHandler()
+{
+
+    //
+    // Clear the interrupt
+    //
+    g_ulSamples[1] = MAP_TimerValueGet(TIMERA1_BASE,TIMER_A);
+    TimerLoadSet(TIMERA1_BASE, TIMER_A,0xffff);
+    //Report("%d", value);
+
+    //
+    // Get the samples and compute the frequency
+    //
+    //number[i] =
+    g_ulSamples[0] = g_ulSamples[1];
+
+   // Report("sample 0: %d\n\r", g_ulSamples[0]);
+    //Report("sample 1: %d\n\r", g_ulSamples[1]);
+
+    delta = g_ulSamples[1];
+    if(delta < 55000)
+        value = 0;
+    else
+        value = 1;
+    if(i==0)
+        value = 0;
+    number[i] = (char)value;
+    i++;
+    //if(delta > 6000)
+    //  delta = 65535/2 - delta;
+    //Report("delta: %d\n\r", delta);
+    MAP_TimerIntClear(TIMERA1_BASE,TIMER_CAPA_EVENT);
+
+
+}
+
+
+//*****************************************************************************
+//
+//! Board Initialization & Configuration
+//!
+//! \param  None
+//!
+//! \return None
+//
+//*****************************************************************************
+static void
+BoardInit(void) {
+	MAP_IntVTableBaseSet((unsigned long)&g_pfnVectors[0]);
+    
+    // Enable Processor
+    //
+    MAP_IntMasterEnable();
+    MAP_IntEnable(FAULT_SYSTICK);
+
+    PRCMCC3200MCUInit();
+}
+//****************************************************************************
+//
+//! Main function
+//!
+//! \param none
+//! 
+//!
+//! \return None.
+//
+//****************************************************************************
+int main() {
+	unsigned long ulStatus;
+
+    BoardInit();
+    PinMuxConfig();
+    InitTerm();
+    ClearTerm();
+    DisplayBanner(APP_NAME);
+
+    //
+    // Register the interrupt handlers
+    //
+    MAP_GPIOIntRegister(GPIOA1_BASE, GPIOA1IntHandler);
+    MAP_GPIOIntRegister(switch2.port, GPIOA2IntHandler);
+
+    //
+    // Configure rising edge interrupts on SW2 and SW3
+    //
+    MAP_GPIOIntTypeSet(GPIOA1_BASE, 0x20, GPIO_RISING_EDGE);	// SW3
+    MAP_GPIOIntTypeSet(switch2.port, switch2.pin, GPIO_RISING_EDGE);	// SW2
+
+    ulStatus = MAP_GPIOIntStatus (GPIOA1_BASE, false);
+    MAP_GPIOIntClear(GPIOA1_BASE, ulStatus);			// clear interrupts on GPIOA1
+    ulStatus = MAP_GPIOIntStatus (switch2.port, false);
+    MAP_GPIOIntClear(switch2.port, ulStatus);			// clear interrupts on GPIOA2
+
+    // clear global variables
+    SW2_intcount=0;
+    SW3_intcount=0;
+    SW2_intflag=0;
+    SW3_intflag=0;
+
+    // Enable SW2 and SW3 interrupts
+    MAP_GPIOIntEnable(GPIOA1_BASE, 0x20);
+    MAP_GPIOIntEnable(switch2.port, switch2.pin);
+
+
+    Message("\t\t****************************************************\n\r");
+    Message("\t\t\tPush SW3 or SW2 to generate an interrupt\n\r");
+    Message("\t\t ****************************************************\n\r");
+    Message("\n\n\n\r");
+	Report("SW2 ints = %d\tSW3 ints = %d\r\n",SW2_intcount,SW3_intcount);
+
+    while (1) {
+    	while ((SW2_intflag==0) && (SW3_intflag==0)) {;}
+    	if (SW2_intflag) {
+    		SW2_intflag=0;	// clear flag
+    		Report("SW2 ints = %d\tSW3 ints = %d\r\n",SW2_intcount,SW3_intcount);
+    	}
+    	if (SW3_intflag) {
+    		SW3_intflag=0;	// clear flag
+    		Report("SW2 ints = %d\tSW3 ints = %d\r\n",SW2_intcount,SW3_intcount);
+    	}
+    }
+}
+
+//*****************************************************************************
+//
+// Close the Doxygen group.
+//! @}
+//
+//*****************************************************************************

@@ -107,10 +107,13 @@ typedef struct {
     int index;
 } Msg;
 
+typedef struct {
+    int x, y;
+} Coordinate;
+
 //*****************************************************************************
 //                 GLOBAL VARIABLES -- Start
 //*****************************************************************************
-static unsigned long g_ulSamples[2];
 static int buffer[100];
 static int number[100];
 static int value = 1;
@@ -130,10 +133,12 @@ static char keySet[10][4][2] = {{"","","",""},// space for 0
                                 {"T","U","V",""}, // 8
                                 {"W","X","Y","Z"} // 9
                         };
-static int x = 0, y = 0;
 static int keyBuffer[10] = {0,0,0,0,0,0,0,0,0,0};
 
-static PinSetting OC = { .port = GPIOA3_BASE, .pin = 0x80};
+static PinSetting OC = {.port = GPIOA3_BASE, .pin = 0x80};
+static PinSetting Receiver = {.port = GPIOA1_BASE, .pin = 0x8};
+static Coordinate top = {.x = 0, .y = 0};
+static Coordinate bot = {.x = 0, .y = 120};
 static Msg message;
 
 #if defined(ccs) || defined(gcc)
@@ -168,7 +173,7 @@ DisplayBanner(char * AppName)
 }
 
 void deleteChar(int x, int y) {
-  fillRect(x, y, 6, 8, 0x0000);
+    fillRect(x, y, 6, 8, 0x0000);
 }
 
 //*****************************************************************************
@@ -239,54 +244,13 @@ void findPattern()
 }
 
 
-//*****************************************************************************
-//
-//! Timer interrupt handler
-//
-//*****************************************************************************
-static void TimerIntHandler()
-{
-
-    //
-    // Clear the interrupt
-    //
-    g_ulSamples[1] = TimerValueGet(TIMERA1_BASE, TIMER_A);
-    TimerLoadSet(TIMERA1_BASE, TIMER_A, 0xffff);
-
-    //
-    // Get the samples and compute the frequency
-    //
-    g_ulSamples[0] = g_ulSamples[1];
-
-    delta = g_ulSamples[1];
-    //Report("Delta: %d\n\r", delta);
-    if(delta > 40000)
-        value = 0;
-    else
-        value = 1;
-
-    if (i >= 16 && !detected) {
-        findPattern();
-    }
-    if (!detected)
-        buffer[i] = value;
-    else
-        number[i] = value;
-
-
-    i++;
-    TimerIntClear(TIMERA1_BASE,TIMER_CAPA_EVENT);
-
-
-}
-
-static void TimerHandler()
+static void ResetButton()
 {
     Timer_IF_InterruptClear(TIMERA0_BASE);
     //
     // Turn off the timer
     //
-    Timer_IF_Stop(TIMERA0_BASE, TIMER_A);
+    TimerDisable(TIMERA0_BASE, TIMER_A);
     // reset the key, so the same key can be enter again
     lastkey = '\0';
     Report("RESET\n\r");
@@ -303,9 +267,9 @@ void Process(char key, int keyIndex, int numKeys)
      }
      if (keyBuffer[keyIndex] == numKeys) {
          keyBuffer[keyIndex] = 0;
-         x -= 6;
-         deleteChar(x, y);
-         setCursor(x, y);
+         top.x -= 6;
+         deleteChar(top.x, top.y);
+         setCursor(top.x, top.y);
      }
      if (numKeys == 3) {
          switch (keyBuffer[keyIndex]) {
@@ -315,9 +279,9 @@ void Process(char key, int keyIndex, int numKeys)
              break;
          case 1:
          case 2:
-             x -= 6;
-             deleteChar(x, y);
-             setCursor(x, y);
+             top.x -= 6;
+             deleteChar(top.x, top.y);
+             setCursor(top.x, top.y);
              Outstr(keySet[keyIndex][keyBuffer[keyIndex]]);
              message.message[message.index] = keySet[keyIndex][keyBuffer[keyIndex]][0];
              break;
@@ -334,9 +298,9 @@ void Process(char key, int keyIndex, int numKeys)
          case 1:
          case 2:
          case 3:
-             x -= 6;
-             deleteChar(x, y);
-             setCursor(x, y);
+             top.x -= 6;
+             deleteChar(top.x, top.y);
+             setCursor(top.x, top.y);
              Outstr(keySet[keyIndex][keyBuffer[keyIndex]]);
              message.message[message.index] = keySet[keyIndex][keyBuffer[keyIndex]][0];
              break;
@@ -348,7 +312,55 @@ void Process(char key, int keyIndex, int numKeys)
      lastkey = key;
 }
 
+static void UARTIntHandler()
+{
+    UARTIntClear(UARTA1_BASE,UART_INT_RX|UART_INT_TX);
+    char tmp = UARTCharGet(UARTA1_BASE);
+    char temp[2] = {tmp, '\0'};
+    setCursor(bot.x, bot.y);
+    Outstr(temp);
+    bot.x += 6;
+    if (bot.x > 122) {
+        bot.x = 0;
+        bot.y -= 8;
+    }
+}
 
+static void GPIOEdgeHandler(void) {
+    unsigned long ulStatus;
+    TimerDisable(TIMERA0_BASE, TIMER_A);
+    TimerDisable(TIMERA2_BASE, TIMER_A);
+    Timer_IF_InterruptClear(TIMERA2_BASE);
+    ulStatus = MAP_GPIOIntStatus (Receiver.port, true);
+    MAP_GPIOIntClear(Receiver.port, ulStatus);
+
+    if(delta > 3)
+        value = 1;
+    else
+        value = 0;
+
+    delta = 0;
+
+    if (i >= 16 && !detected) {
+        findPattern();
+    }
+    if (!detected)
+        buffer[i] = value;
+    else
+        number[i] = value;
+
+
+    i++;
+    TimerEnable(TIMERA2_BASE, TIMER_A);
+    TimerEnable(TIMERA0_BASE, TIMER_A);
+
+}
+
+void TimerCountHandler(void)
+{
+    Timer_IF_InterruptClear(TIMERA2_BASE);
+    delta++;
+}
 
 //*****************************************************************************
 //
@@ -363,37 +375,29 @@ int main()
     BoardInit();
     PinMuxConfig();
 
-    MAP_PinConfigSet(PIN_02,PIN_TYPE_STD_PU,PIN_STRENGTH_6MA);
-    MAP_IntPrioritySet(INT_TIMERA1A, INT_PRIORITY_LVL_1);
-    MAP_TimerIntRegister(TIMERA1_BASE,TIMER_A,TimerIntHandler);
-    MAP_TimerConfigure(TIMERA1_BASE, (TIMER_CFG_SPLIT_PAIR | TIMER_CFG_A_CAP_TIME));
-    MAP_TimerControlEvent(TIMERA1_BASE,TIMER_A,TIMER_EVENT_NEG_EDGE);
-    MAP_TimerLoadSet(TIMERA1_BASE,TIMER_A,0xffff);
-    MAP_TimerIntEnable(TIMERA1_BASE,TIMER_CAPA_EVENT);
-    MAP_TimerEnable(TIMERA1_BASE,TIMER_A);
-
-
     // Configuring the timers
     //
     Timer_IF_Init(PRCM_TIMERA0, TIMERA0_BASE, TIMER_CFG_PERIODIC, TIMER_A, 0);
-
+    Timer_IF_Init(PRCM_TIMERA2, TIMERA2_BASE, TIMER_CFG_PERIODIC, TIMER_A, 0);
     //
     // Setup the interrupts for the timer timeouts.
     //
-    Timer_IF_IntSetup(TIMERA0_BASE, TIMER_A, TimerHandler);
+    Timer_IF_IntSetup(TIMERA2_BASE, TIMER_A, TimerCountHandler);
+    Timer_IF_IntSetup(TIMERA0_BASE, TIMER_A, ResetButton);
+
+    TimerLoadSet(TIMERA2_BASE, TIMER_A, MILLISECONDS_TO_TICKS(0.5));
+    TimerLoadSet(TIMERA0_BASE, TIMER_A, MILLISECONDS_TO_TICKS(1000));
+
+    GPIOIntRegister(Receiver.port, GPIOEdgeHandler);
+    GPIOIntTypeSet(Receiver.port, Receiver.pin, GPIO_FALLING_EDGE);
+    int ulStatus = MAP_GPIOIntStatus(Receiver.port, false);
+    GPIOIntClear(Receiver.port, ulStatus);
+
+    GPIOIntEnable(Receiver.port, Receiver.pin);
 
     ClearTerm();
     InitTerm();
     DisplayBanner(APP_NAME);
-
-    //Enable and set up the UARTA1
-    MAP_UARTEnable(UARTA1_BASE);
-    MAP_UARTFIFOEnable(UARTA1_BASE);
-    MAP_UARTConfigSetExpClk(UARTA1_BASE,MAP_PRCMPeripheralClockGet(PRCM_UARTA1),
-                             UART_BAUD_RATE,
-                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
-                             UART_CONFIG_PAR_NONE));
-
 
     MAP_PRCMPeripheralClkEnable(PRCM_GSPI,PRCM_RUN_MODE_CLK);
 
@@ -423,6 +427,16 @@ int main()
     Adafruit_Init();
     fillScreen(BLACK);
 
+    //Enable and set up the UARTA1
+    MAP_UARTConfigSetExpClk(UARTA1_BASE,MAP_PRCMPeripheralClockGet(PRCM_UARTA1),
+                             UART_BAUD_RATE,
+                             (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE |
+                             UART_CONFIG_PAR_NONE));
+    MAP_UARTIntEnable(UARTA1_BASE, UART_INT_RX);
+    MAP_UARTIntRegister(UARTA1_BASE, UARTIntHandler);
+
+
+
     while (1) {
         if(!(detected && i >= 16)){
             continue;
@@ -433,9 +447,11 @@ int main()
             sum += (int)number[k]*pow(2, (15-k));
         }
 
-        Timer_IF_Start(TIMERA0_BASE, TIMER_A, 1500);
+        TimerLoadSet(TIMERA0_BASE, TIMER_A, MILLISECONDS_TO_TICKS(1000));
+        TimerEnable(TIMERA0_BASE, TIMER_A);
+        TimerDisable(TIMERA2_BASE, TIMER_A);
 
-        setCursor(x, y);
+        setCursor(top.x, top.y);
 
         switch(sum){
             case(BUTTON_ZERO):
@@ -473,9 +489,9 @@ int main()
                 break;
             case(BUTTON_LAST):
                 Report("Delete\n\r");
-                x -= 6;
-                deleteChar(x, y);
-                x -= 6;
+                top.x -= 6;
+                deleteChar(top.x, top.y);
+                top.x -= 6;
                 lastkey = 'd';
                 message.message[message.index--] = '\0';
                 break;
@@ -487,28 +503,30 @@ int main()
                 Report("message: %s\n\r", message.message);
                 int index;
                 for (index = 0; index < message.index; index++) {
-                    x -= 6;
-                    deleteChar(x, y);
+                    top.x -= 6;
+                    deleteChar(top.x, top.y);
+                    UARTCharPut(UARTA1_BASE, message.message[index]);
                 }
                 message.index = 0;
                 message.message[message.index] = '\0';
+                TimerEnable(TIMERA2_BASE, TIMER_A);
+                TimerDisable(TIMERA0_BASE, TIMER_A);
                 start = 0;
-                x -= 6;
+                top.x -= 6;
                 break;
             default:
                 Report("Unknown code %d\n\r", sum);
-                x -= 6;
+                top.x -= 6;
                 lastkey = 'u';
                 break;
         }
         Report("Pressed\n\r");
         i = 0;
         detected = 0;
-        x += 6;
-        Report("x: %d, y: %d\n\r", x, y);
-        if (x > 122) {
-            x = 0;
-            y += 8;
+        top.x += 6;
+        if (top.x > 122) {
+            top.x = 0;
+            top.y += 8;
         }
     }
 

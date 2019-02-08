@@ -146,7 +146,7 @@ all: lab3\ part3.out
 lab3\ part3.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib --abi=eabi -me -g --define=cc3200 --define=ccs --diag_warning=225 --diag_wrap=off --display_error_number -z -m"lab3 part3.map" --stack_size=0x1000 --heap_size=0x800 -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/lib" -i"C:/TI/CC3200SDK_1.3.0/cc3200-sdk/driverlib/ccs/Release" -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="lab3 part3_linkInfo.xml" --rom_model -o "lab3 part3.out" $(ORDERED_OBJS)
+	"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=vfplib -me --define=cc3200 --define=ccs -g --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"lab3 part3.map" --heap_size=0x800 --stack_size=0x1000 -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/lib" -i"C:/TI/CC3200SDK_1.3.0/cc3200-sdk/driverlib/ccs/Release" -i"C:/TI/ccsv8/tools/compiler/ti-cgt-arm_18.1.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="lab3 part3_linkInfo.xml" --rom_model -o "lab3 part3.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 	@$(MAKE) --no-print-directory post-build

@@ -36,7 +36,7 @@
 //
 //*****************************************************************************
 
-// This file was automatically generated on 2/6/2019 at 11:46:36 PM
+// This file was automatically generated on 2/7/2019 at 3:18:36 PM
 // by TI PinMux version 4.0.1530
 //
 //*****************************************************************************
@@ -64,6 +64,7 @@ void PinMuxConfig(void)
     PinModeSet(PIN_21, PIN_MODE_0);
     PinModeSet(PIN_52, PIN_MODE_0);
     PinModeSet(PIN_53, PIN_MODE_0);
+    PinModeSet(PIN_59, PIN_MODE_0);
     PinModeSet(PIN_60, PIN_MODE_0);
     PinModeSet(PIN_61, PIN_MODE_0);
     PinModeSet(PIN_62, PIN_MODE_0);
@@ -140,7 +141,7 @@ void PinMuxConfig(void)
     PinTypeUART(PIN_01, PIN_MODE_7);
 
     //
-    // Configure PIN_59 for UART1 UART1_RX
+    // Configure PIN_17 for UART1 UART1_RX
     //
-    PinTypeUART(PIN_59, PIN_MODE_6);
+    PinTypeUART(PIN_17, PIN_MODE_2);
 }

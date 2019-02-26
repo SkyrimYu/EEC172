@@ -1,3 +1,4 @@
+// Written by: Teresa Li and Kevin Ren
 // Standard includes
 #include <string.h>
 

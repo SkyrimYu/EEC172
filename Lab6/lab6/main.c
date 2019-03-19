@@ -1,60 +1,4 @@
-//*****************************************************************************
-//
-// Copyright (C) 2014 Texas Instruments Incorporated - http://www.ti.com/ 
-// 
-// 
-//  Redistribution and use in source and binary forms, with or without 
-//  modification, are permitted provided that the following conditions 
-//  are met:
-//
-//    Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer.
-//
-//    Redistributions in binary form must reproduce the above copyright
-//    notice, this list of conditions and the following disclaimer in the 
-//    documentation and/or other materials provided with the   
-//    distribution. 
-//
-//    Neither the name of Texas Instruments Incorporated nor the names of
-//    its contributors may be used to endorse or promote products derived
-//    from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-//  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-//  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-//  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
-//  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, 
-//  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-//  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-//  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
-//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
-//  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
-//
-//*****************************************************************************
-
-
-//*****************************************************************************
-//
-// Application Name     -   SSL Demo
-// Application Overview -   This is a sample application demonstrating the
-//                          use of secure sockets on a CC3200 device.The
-//                          application connects to an AP and
-//                          tries to establish a secure connection to the
-//                          Google server.
-// Application Details  -
-// docs\examples\CC32xx_SSL_Demo_Application.pdf
-// or
-// http://processors.wiki.ti.com/index.php/CC32xx_SSL_Demo_Application
-//
-//*****************************************************************************
-
-
-//*****************************************************************************
-//
-//! \addtogroup ssl
-//! @{
-//
+// By Teresa Li, Kevin Ren
 //*****************************************************************************
 
 #include <stdio.h>
@@ -122,7 +66,7 @@
 #define SERVER_NAME             "wordsapiv1.p.rapidapi.com"
 #define GOOGLE_DST_PORT         443
 
-#define SL_SSL_CA_CERT "/cert/rootCA.der" //starfield class2 rootca (from firefox) // <-- this one works
+#define SL_SSL_CA_CERT "/cert/rootCA.der" //root certificate
 
 
 //NEED TO UPDATE THIS FOR IT TO WORK!
@@ -1336,11 +1280,7 @@ void main() {
 
        MAP_SPICSDisable(GSPI_BASE);
 }
-//*****************************************************************************
-//
-// Close the Doxygen group.
-//! @}
-//
+
 //*****************************************************************************
 
 static int http_post(int iTLSSockID){
@@ -1353,16 +1293,16 @@ static int http_post(int iTLSSockID){
      pcBufHeaders = acSendBuff;
      strcpy(pcBufHeaders, POSTHEADER1);
      pcBufHeaders += strlen(POSTHEADER1);
-
+     //inputted word
      strcpy(pcBufHeaders, message.message);
      pcBufHeaders += strlen(message.message);
-
+    
      strcpy(pcBufHeaders, POSTHEADER2);
      pcBufHeaders += strlen(POSTHEADER2);
 
      strcpy(pcBufHeaders, HOSTHEADER);
      pcBufHeaders += strlen(HOSTHEADER);
-
+     // X-rapidapi-KEY
      strcpy(pcBufHeaders, CHEADER);
      pcBufHeaders += strlen(CHEADER);
      strcpy(pcBufHeaders, "\r\n\r\n");
@@ -1405,6 +1345,7 @@ static int http_post(int iTLSSockID){
          pcBufHeaders++;
 
          UART_PRINT("%s\n\r", definition);
+         // parse recieved JSON data
          ParseJSONData(definition);
          UART_PRINT("\n\r\n\r");
      }
